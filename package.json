@@ -12,7 +12,9 @@
 	},
 	"dependencies": {
 		"@tauri-apps/api": "^1.1.0",
+		"@types/extract-colors": "^1.1.1",
 		"daisyui": "^2.37.0",
+		"extract-colors": "^3.0.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-highlight-words": "^0.18.0",

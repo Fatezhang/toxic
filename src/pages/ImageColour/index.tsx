@@ -8,39 +8,41 @@ const ImageColour = () => {
   useEffect(() => {
     const options = {
       pixels: 64000,
-      distance: 0.2,
+      distance: 0.33,
       saturationDistance: 0.2,
       lightnessDistance: 0.2,
       hueDistance: 0.083333333,
       crossOrigin: 'anonymous'
     };
+    // @ts-ignore
     imageSrc && extractColorsFromSrc(imageSrc, options)
-      .then((finalColors) => {
-        setExtractedColors(finalColors);
+      .then((finalColors: FinalColor[]) => {
+        setExtractedColors(finalColors.slice(0, 3).reverse());
       })
       .catch(() => {
         // console.log(e);
       });
-  }, []);
+  }, [ imageSrc ]);
 
   const majorColor = extractedColors.length > 0 ? extractedColors[0].hex : 'black';
 
 
   return <div className="p-2 h-full flex flex-col justify-start">
     <div className="my-2 w-full">
-      <label htmlFor="my-modal" className="btn">Set image URL</label>
+      <label htmlFor="my-modal" className="btn btn-sm">Set image URL</label>
     </div>
     {imageSrc
       ? <div className="flex flex-row h-full card shadow-2xl shadow-gray-500 items-center">
         <div className="w-1/2 h-full flex items-center">
-          <div className={`h-[240px] bg-[${majorColor}] rounded-r-lg w-full flex justify-center`}>
+          <div className={'h-[240px] rounded-r-lg w-full flex justify-center'}
+               style={{ backgroundColor: majorColor }}>
             <img className="max-h-[400px] self-center shadow-xl" alt="image"
                  src={imageSrc}/>
           </div>
         </div>
         <div className="w-1/2 h-[240px] flex items-center p-16 justify-between">
           {
-            extractedColors.slice(0, 3).map(({ hex, red, blue, green }) => {
+            extractedColors.map(({ hex, red, blue, green }) => {
               return SingleColorBlock(hex, { red, blue, green });
             })
           }
@@ -62,11 +64,11 @@ const ImageColour = () => {
       <div className="modal-box">
         <h3 className="font-bold text-lg">Input a valid image URL!</h3>
         <input type="text" placeholder="Input here!"
-               className="input input-sm w-full max-w-xs my-2"
+               className="input input-sm input-bordered w-full max-w-xs my-2"
                onChange={(e) => setImageSrc(e.target.value)}
         />
         <div className="modal-action">
-          <label htmlFor="my-modal" className="btn">Close Modal 🏞️</label>
+          <label htmlFor="my-modal" className="btn btn-sm">Close Modal 🏞️</label>
         </div>
       </div>
     </div>
@@ -74,8 +76,8 @@ const ImageColour = () => {
 };
 
 const SingleColorBlock = (hexColor: string, rgbColor: { red: number, blue: number, green: number }) => {
-  return <div className="flex flex-col gap-4">
-    <div className={`w-20 h-20 border bg-[${hexColor}] rounded-lg`}/>
+  return <div className="flex flex-col gap-4" key={hexColor}>
+    <div className={'w-20 h-20 border rounded-lg'} style={{ backgroundColor: hexColor }}/>
     <div className="flex flex-col gap-2 p-2">
       <div>
         <p className="text-accent text-xs">HEX</p>
@@ -84,7 +86,7 @@ const SingleColorBlock = (hexColor: string, rgbColor: { red: number, blue: numbe
       <div>
         <p className="text-accent text-xs">RGB</p>
         <p
-          className="text-accent-content text-sm font-bold">{rgbColor.red}, {rgbColor.blue}, {rgbColor.green}</p>
+          className="text-accent-content text-sm font-bold">{rgbColor.red}, {rgbColor.green}, {rgbColor.blue}</p>
       </div>
     </div>
   </div>;
